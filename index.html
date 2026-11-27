@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f9d6b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="سجل القرني">
+<title>سجل القرني للتداول</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--g:#0f9d6b;--g2:#e7f7f0;--r:#e5484d;--r2:#fdecec;--y:#b7791f;--y2:#fff6e5;--bg:#f4f6f8;--card:#fff;--tx:#17202a;--mu:#6b7785;--bd:#e3e8ee}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Tajawal,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--tx);padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+header{background:var(--g);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:19px;font-weight:800}
+header small{opacity:.85;font-size:12px}
+main{padding:14px;max-width:720px;margin:auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 10px;font-size:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px}
+.stat b{display:block;font-size:18px;margin-top:2px;direction:ltr;text-align:right}
+.stat span{font-size:12px;color:var(--mu)}
+.pos{color:var(--g)}.neg{color:var(--r)}
+label{display:block;font-size:13px;color:var(--mu);margin:8px 0 4px}
+input,select,textarea{width:100%;font:inherit;font-size:16px;padding:10px;border:1px solid var(--bd);border-radius:10px;background:#fff;color:var(--tx)}
+input[type=number],input[type=date]{direction:ltr;text-align:right}
+textarea{min-height:70px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:11px 14px;cursor:pointer;background:var(--g);color:#fff;font-size:15px}
+button.sec{background:#eef1f4;color:var(--tx)}
+button.red{background:var(--r)}
+button.sm{padding:7px 10px;font-size:13px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btns button{flex:1}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--bd);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav button{flex:1;background:none;color:var(--mu);border-radius:0;padding:9px 2px;font-size:12px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button i{font-style:normal;font-size:20px}
+nav button.on{color:var(--g);font-weight:800}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}
+.chip{background:#fff;border:1px solid var(--bd);color:var(--tx);padding:7px 12px;border-radius:20px;font-size:13px;white-space:nowrap}
+.chip.on{background:var(--g);color:#fff;border-color:var(--g)}
+.trade{border-right:4px solid var(--bd)}
+.trade.open{border-right-color:#2b7fff}.trade.planned{border-right-color:var(--y)}.trade.closed.win{border-right-color:var(--g)}.trade.closed.loss{border-right-color:var(--r)}
+.th{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sym{font-size:18px;font-weight:800;direction:ltr}
+.tag{font-size:11px;padding:3px 8px;border-radius:20px;background:#eef1f4;color:var(--mu);font-weight:700}
+.tag.planned{background:var(--y2);color:var(--y)}.tag.open{background:#e8f1ff;color:#2b7fff}.tag.win{background:var(--g2);color:var(--g)}.tag.loss{background:var(--r2);color:var(--r)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:13px;margin-top:8px}
+.kv div{display:flex;justify-content:space-between;border-bottom:1px dashed var(--bd);padding:3px 0}
+.kv div b{direction:ltr}
+.note{font-size:13px;color:var(--mu);margin-top:8px;white-space:pre-wrap}
+.calc{background:var(--g2);border-radius:12px;padding:12px;margin-top:12px;font-size:14px}
+.calc .kv div{border-color:#c9eadb}
+.warn{background:var(--y2);color:#7a4e0d;border-radius:10px;padding:8px 10px;font-size:13px;margin-top:8px}
+.danger{background:var(--r2);color:#9b1c1f}
+.ok{background:var(--g2);color:#0b6b49}
+.empty{text-align:center;color:var(--mu);padding:24px 10px;font-size:14px}
+.rules li{margin-bottom:7px;font-size:14px;line-height:1.6}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.modal.show{display:flex}
+.sheet{background:#fff;width:100%;max-width:720px;border-radius:18px 18px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:90vh;overflow:auto}
+.sheet h3{margin:0 0 6px}
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#17202a;color:#fff;padding:10px 16px;border-radius:20px;font-size:14px;display:none;z-index:30}
+#out{direction:rtl;font-size:13px;min-height:260px;font-family:ui-monospace,Menlo,monospace}
+.check{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--tx);margin:8px 0}
+.check input{width:auto}
+.mini{font-size:12px;color:var(--mu)}
+.move{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px dashed var(--bd)}
+</style>
+</head>
+<body>
+<header><h1>📒 سجل القرني للتداول</h1><small id="hsub"></small></header>
+<main id="app"></main>
+
+<nav>
+  <button data-v="home" class="on"><i>🏠</i>الرئيسية</button>
+  <button data-v="plan"><i>➕</i>خطة صفقة</button>
+  <button data-v="trades"><i>📋</i>الصفقات</button>
+  <button data-v="tools"><i>🧮</i>الحاسبة</button>
+  <button data-v="claude"><i>🤖</i>Claude</button>
+  <button data-v="settings"><i>⚙️</i>الإعدادات</button>
+</nav>
+
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div id="toast"></div>
+
+<script>
+const KEY='tradeJournal_v1';
+const DEF={settings:{capital:3000,usdRate:3.75,riskPct:2,maxPosPct:40,maxDDPct:15,platform:'سهم'},moves:[],trades:[]};
+let S=load(), view='home', filter='all', editId=null;
+
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return Object.assign(structuredClone(DEF),d,{settings:Object.assign({},DEF.settings,d.settings)})}catch(e){}return structuredClone(DEF)}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('تعذّر الحفظ في المتصفح')}}
+const $=s=>document.querySelector(s);
+const n=v=>{const x=parseFloat(String(v).replace(/,/g,''));return isFinite(x)?x:0};
+const fmt=(x,d=2)=>(isFinite(x)?x:0).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function today(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2200)}
+const cur=t=>t.market==='US'?'$':'ر.س';
+const rate=t=>t.market==='US'?n(S.settings.usdRate):1;
+const cls=x=>x>0?'pos':x<0?'neg':'';
+const sgn=x=>(x>0?'+':'')+fmt(x);
+
+/* ===== الحسابات ===== */
+const cost=t=>(n(t.entryPrice)*n(t.qty)+n(t.entryFees))*rate(t);
+const realPL=t=>((n(t.exitPrice)-n(t.entryPrice))*n(t.qty)-n(t.entryFees)-n(t.exitFees))*rate(t);
+const unrealPL=t=>((n(t.lastPrice||t.entryPrice)-n(t.entryPrice))*n(t.qty)-n(t.entryFees))*rate(t);
+const pct=t=>{const c=n(t.entryPrice)*n(t.qty)+n(t.entryFees);return c?((t.status==='closed'?realPL(t):unrealPL(t))/rate(t))/c*100:0};
+
+function calc(){
+  const net=S.moves.reduce((a,m)=>a+(m.type==='in'?n(m.amount):-n(m.amount)),0);
+  const closed=S.trades.filter(t=>t.status==='closed').sort((a,b)=>(a.exitDate||'').localeCompare(b.exitDate||''));
+  const open=S.trades.filter(t=>t.status==='open');
+  let eq=n(S.settings.capital)+net, peak=eq;
+  closed.forEach(t=>{eq+=realPL(t);peak=Math.max(peak,eq)});
+  const realized=closed.reduce((a,t)=>a+realPL(t),0);
+  const unreal=open.reduce((a,t)=>a+unrealPL(t),0);
+  const invested=open.reduce((a,t)=>a+cost(t),0);
+  const pls=closed.map(realPL), wins=pls.filter(x=>x>0), losses=pls.filter(x=>x<=0);
+  return{net,equity:eq,peak,dd:peak?(peak-eq)/peak*100:0,realized,unreal,invested,cash:eq-invested,market:eq+unreal,
+    closed,open,wins:wins.length,losses:losses.length,winRate:closed.length?wins.length/closed.length*100:0,
+    avgWin:wins.length?wins.reduce((a,b)=>a+b,0)/wins.length:0,avgLoss:losses.length?losses.reduce((a,b)=>a+b,0)/losses.length:0,
+    best:pls.length?Math.max(...pls):0,worst:pls.length?Math.min(...pls):0};
+}
+
+/* ===== التنقل ===== */
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+function go(v,id){view=v;editId=id||null;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));render();window.scrollTo(0,0)}
+function render(){const c=calc();$('#hsub').textContent=`المنصة: ${S.settings.platform} • قيمة المحفظة ${fmt(c.market)} ر.س`;
+  ({home,plan,trades,claude,settings,tools})[view](c)}
+
+/* ===== الرئيسية ===== */
+function home(c){
+  const ddWarn=c.dd>=n(S.settings.maxDDPct)?`<div class="warn danger">⛔ التراجع من القمة ${fmt(c.dd,1)}% وصل حد الإيقاف (${S.settings.maxDDPct}%). أوقف الصفقات الجديدة وراجع الخطة مع Claude.</div>`:c.dd>=n(S.settings.maxDDPct)*0.66?`<div class="warn">⚠️ التراجع من القمة ${fmt(c.dd,1)}% يقترب من حد الإيقاف.</div>`:'';
+  $('#app').innerHTML=`
+  ${ddWarn}
+  <div class="grid">
+    <div class="stat"><span>قيمة المحفظة (مع غير المحقق)</span><b>${fmt(c.market)}</b></div>
+    <div class="stat"><span>الكاش المتاح</span><b>${fmt(c.cash)}</b></div>
+    <div class="stat"><span>الربح المحقق</span><b class="${cls(c.realized)}">${sgn(c.realized)}</b></div>
+    <div class="stat"><span>غير المحقق (مفتوحة)</span><b class="${cls(c.unreal)}">${sgn(c.unreal)}</b></div>
+    <div class="stat"><span>نسبة النجاح</span><b>${fmt(c.winRate,0)}% <small class="mini">(${c.wins}/${c.closed.length})</small></b></div>
+    <div class="stat"><span>التراجع من القمة</span><b class="${c.dd>0?'neg':''}">${fmt(c.dd,1)}%</b></div>
+  </div>
+  <p class="mini">المبالغ بالريال. سعر الدولار المعتمد ${S.settings.usdRate}.</p>
+  <div class="btns" style="margin-bottom:12px"><button onclick="go('plan')">➕ خطة صفقة جديدة</button><button class="sec" onclick="go('claude')">🤖 تجهيز رسالة لـ Claude</button></div>
+  <div class="card"><h3>الصفقات المفتوحة (${c.open.length})</h3>${c.open.length?c.open.map(tradeCard).join(''):'<div class="empty">لا توجد صفقات مفتوحة</div>'}</div>
+  ${S.trades.filter(t=>t.status==='planned').length?`<div class="card"><h3>خطط تنتظر التنفيذ</h3>${S.trades.filter(t=>t.status==='planned').map(tradeCard).join('')}</div>`:''}`;
+}
+
+/* ===== بطاقة صفقة ===== */
+function tradeCard(t){
+  const c=cur(t);let st=t.status,tag='',body='';
+  if(st==='planned'){tag='<span class="tag planned">خطة</span>';
+    body=`<div class="kv"><div><span>دخول مخطط</span><b>${c}${fmt(n(t.entryPlan))}</b></div><div><span>الكمية</span><b>${t.qty||'-'}</b></div><div><span>وقف الخسارة</span><b class="neg">${c}${fmt(n(t.stop))}</b></div><div><span>الهدف</span><b class="pos">${c}${fmt(n(t.target))}</b></div></div>`}
+  if(st==='open'){tag='<span class="tag open">مفتوحة</span>';const u=unrealPL(t);
+    body=`<div class="kv"><div><span>سعر الدخول</span><b>${c}${fmt(n(t.entryPrice))}</b></div><div><span>الكمية</span><b>${t.qty}</b></div><div><span>السعر الحالي</span><b>${c}${fmt(n(t.lastPrice||t.entryPrice))}</b></div><div><span>غير محقق</span><b class="${cls(u)}">${sgn(u)} ر.س (${fmt(pct(t),1)}%)</b></div><div><span>وقف الخسارة</span><b class="neg">${c}${fmt(n(t.stop))}</b></div><div><span>الهدف</span><b class="pos">${c}${fmt(n(t.target))}</b></div></div>
+    ${t.lastPrice&&n(t.stop)&&n(t.lastPrice)<=n(t.stop)?'<div class="warn danger">⛔ السعر الحالي عند وقف الخسارة أو تحته — نفّذ الخطة.</div>':''}
+    ${t.lastPrice&&n(t.target)&&n(t.lastPrice)>=n(t.target)?'<div class="warn ok">🎯 السعر وصل الهدف.</div>':''}`}
+  if(st==='closed'){const p=realPL(t);tag=`<span class="tag ${p>0?'win':'loss'}">${p>0?'رابحة':'خاسرة'}</span>`;
+    body=`<div class="kv"><div><span>دخول</span><b>${c}${fmt(n(t.entryPrice))}</b></div><div><span>خروج</span><b>${c}${fmt(n(t.exitPrice))}</b></div><div><span>الكمية</span><b>${t.qty}</b></div><div><span>النتيجة</span><b class="${cls(p)}">${sgn(p)} ر.س (${fmt(pct(t),1)}%)</b></div><div><span>من</span><b>${t.entryDate||''}</b></div><div><span>إلى</span><b>${t.exitDate||''}</b></div></div>
+    ${t.lesson?`<div class="note">📝 الدرس: ${esc(t.lesson)}</div>`:''}`}
+  if(st==='cancelled'){tag='<span class="tag">ملغاة</span>'}
+  const acts=st==='planned'?`<button class="sm" onclick="execM('${t.id}')">✅ تم الشراء</button><button class="sm sec" onclick="go('plan','${t.id}')">تعديل</button><button class="sm sec" onclick="cancelT('${t.id}')">إلغاء</button>`
+   :st==='open'?`<button class="sm" onclick="priceM('${t.id}')">🔄 السعر</button><button class="sm red" onclick="closeM('${t.id}')">بيع / إغلاق</button><button class="sm sec" onclick="go('plan','${t.id}')">تعديل</button>`
+   :`<button class="sm sec" onclick="go('plan','${t.id}')">تعديل</button><button class="sm sec" onclick="delT('${t.id}')">حذف</button>`;
+  const w=st==='closed'?(realPL(t)>0?'win':'loss'):'';
+  return `<div class="card trade ${st} ${w}"><div class="th"><div><span class="sym">${esc(t.symbol)}</span> <span class="mini">${esc(t.name||'')} • ${t.market==='US'?'أمريكي':'سعودي'}</span></div>${tag}</div>${body}
+  ${t.reason?`<div class="note">💡 السبب: ${esc(t.reason)}</div>`:''}<div class="btns">${acts}</div></div>`;
+}
+
+/* ===== خطة صفقة ===== */
+function plan(c){
+  const t=editId?S.trades.find(x=>x.id===editId):{market:'US',planDate:today(),sharia:true};
+  if(!t){go('home');return}
+  const v=k=>esc(t[k]??'');
+  $('#app').innerHTML=`<div class="card"><h3>${editId?'تعديل الصفقة':'خطة صفقة جديدة'}</h3>
+  <div class="row"><div><label>رمز السهم</label><input id="f_symbol" value="${v('symbol')}" placeholder="GOOGL أو 2222" style="direction:ltr;text-transform:uppercase"></div>
+  <div><label>السوق</label><select id="f_market"><option value="US"${t.market==='US'?' selected':''}>أمريكي ($)</option><option value="SA"${t.market==='SA'?' selected':''}>سعودي (ر.س)</option></select></div></div>
+  <label>اسم الشركة</label><input id="f_name" value="${v('name')}" placeholder="ألفابيت">
+  <div class="row"><div><label>تاريخ الخطة</label><input type="date" id="f_planDate" value="${v('planDate')||today()}"></div>
+  <div><label>الإطار الزمني المتوقع</label><select id="f_horizon">${['أيام','أسابيع','أشهر','طويل الأجل'].map(o=>`<option${t.horizon===o?' selected':''}>${o}</option>`).join('')}</select></div></div>
+  <div class="row3"><div><label>سعر الدخول</label><input type="number" step="any" inputmode="decimal" id="f_entryPlan" value="${v('entryPlan')}"></div>
+  <div><label>وقف الخسارة</label><input type="number" step="any" inputmode="decimal" id="f_stop" value="${v('stop')}"></div>
+  <div><label>الهدف</label><input type="number" step="any" inputmode="decimal" id="f_target" value="${v('target')}"></div></div>
+  <div class="calc" id="calcBox"></div>
+  <div class="row"><div><label>الكمية (عدد الأسهم)</label><input type="number" step="any" inputmode="decimal" id="f_qty" value="${v('qty')}"></div>
+  <div><label>&nbsp;</label><button class="sec" style="width:100%" onclick="useSug()">استخدم المقترح</button></div></div>
+  <label>سبب الصفقة (فني + أساسي)</label><textarea id="f_reason" placeholder="مثال: تقاطع ذهبي RSI بعد هبوط 27%، أرباح الربع قوية...">${v('reason')}</textarea>
+  <label>ملاحظات الشارت (يومي / أسبوعي)</label><textarea id="f_chart" placeholder="الاتجاه، الدعم، المقاومة، حجم التداول...">${v('chart')}</textarea>
+  <label>توصية Claude (الصقها هنا)</label><textarea id="f_advice">${v('advice')}</textarea>
+  <label class="check"><input type="checkbox" id="f_sharia"${t.sharia!==false?' checked':''}> متوافق مع الشريعة حسب فلتر المنصة</label>
+  ${t.status==='open'||t.status==='closed'?`<div class="row"><div><label>سعر الدخول الفعلي</label><input type="number" step="any" id="f_entryPrice" value="${v('entryPrice')}"></div><div><label>رسوم الشراء</label><input type="number" step="any" id="f_entryFees" value="${v('entryFees')}"></div></div><label>تاريخ الشراء</label><input type="date" id="f_entryDate" value="${v('entryDate')}">`:''}
+  ${t.status==='closed'?`<div class="row"><div><label>سعر البيع</label><input type="number" step="any" id="f_exitPrice" value="${v('exitPrice')}"></div><div><label>رسوم البيع</label><input type="number" step="any" id="f_exitFees" value="${v('exitFees')}"></div></div><label>تاريخ البيع</label><input type="date" id="f_exitDate" value="${v('exitDate')}"><label>الدرس المستفاد</label><textarea id="f_lesson">${v('lesson')}</textarea>`:''}
+  <div class="btns"><button onclick="savePlan()">💾 حفظ</button>${!editId?'<button class="sec" onclick="savePlan(true)">💾 حفظ + تم الشراء</button>':''}<button class="sec" onclick="go('home')">رجوع</button></div></div>`;
+  ['f_entryPlan','f_stop','f_target','f_market','f_qty'].forEach(i=>$('#'+i).addEventListener('input',updCalc));
+  updCalc();
+}
+let SUG=0;
+function updCalc(){
+  const c=calc(),m=$('#f_market').value,r=m==='US'?n(S.settings.usdRate):1,cu=m==='US'?'$':'ر.س';
+  const e=n($('#f_entryPlan').value),s=n($('#f_stop').value),tg=n($('#f_target').value),q=n($('#f_qty').value);
+  const riskAmt=c.equity*n(S.settings.riskPct)/100,maxPos=c.equity*n(S.settings.maxPosPct)/100;
+  if(!e){$('#calcBox').innerHTML=`<b>حاسبة الحجم</b><div class="mini">أدخل سعر الدخول ووقف الخسارة والهدف.<br>أقصى خسارة مسموحة للصفقة: ${fmt(riskAmt)} ر.س (${S.settings.riskPct}%) • أقصى حجم مركز: ${fmt(maxPos)} ر.س • الكاش: ${fmt(c.cash)} ر.س</div>`;SUG=0;return}
+  const per=(e-s)*r, qRisk=per>0?Math.floor(riskAmt/per):0, qCap=Math.floor(Math.min(maxPos,c.cash)/(e*r));
+  SUG=Math.max(0,Math.min(qRisk||qCap,qCap));
+  const stopPct=s?(e-s)/e*100:0, tgtPct=tg?(tg-e)/e*100:0, rr=s&&tg&&e>s?(tg-e)/(e-s):0;
+  const Q=q||SUG, val=Q*e*r, loss=Q*(e-s)*r, gain=Q*(tg-e)*r;
+  let w=[];
+  if(!s)w.push('⛔ لازم تحدد وقف خسارة قبل أي صفقة.');
+  if(s&&s>=e)w.push('⛔ وقف الخسارة لازم يكون أقل من سعر الدخول.');
+  if(stopPct>8)w.push(`⚠️ وقف الخسارة بعيد (${fmt(stopPct,1)}%) — الأفضل 5–8%.`);
+  if(rr&&rr<1.5)w.push(`⚠️ نسبة العائد للمخاطرة ${fmt(rr,1)} أقل من 1.5 — الصفقة غير مجدية غالباً.`);
+  if(SUG===0&&e*r>Math.min(maxPos,c.cash))w.push('⚠️ سعر السهم أكبر من الحد المسموح للمركز — تحتاج أسهم كسرية أو سهم آخر.');
+  if(q&&loss>riskAmt*1.05)w.push(`⚠️ الكمية المدخلة تخاطر بـ ${fmt(loss)} ر.س وهذا أكثر من الحد (${fmt(riskAmt)}).`);
+  if(q&&val>c.cash)w.push('⛔ قيمة الصفقة أكبر من الكاش المتاح.');
+  $('#calcBox').innerHTML=`<b>حاسبة الحجم</b><div class="kv">
+  <div><span>بُعد الوقف</span><b class="neg">-${fmt(stopPct,1)}%</b></div><div><span>بُعد الهدف</span><b class="pos">+${fmt(tgtPct,1)}%</b></div>
+  <div><span>عائد/مخاطرة</span><b>${rr?fmt(rr,2):'-'}</b></div><div><span>الكمية المقترحة</span><b>${SUG}</b></div>
+  <div><span>قيمة الصفقة</span><b>${fmt(val)} ر.س</b></div><div><span>خسارة لو ضرب الوقف</span><b class="neg">-${fmt(loss)}</b></div>
+  <div><span>ربح لو وصل الهدف</span><b class="pos">+${fmt(gain)}</b></div><div><span>الحد المسموح للخسارة</span><b>${fmt(riskAmt)}</b></div></div>
+  ${w.map(x=>`<div class="warn${x.startsWith('⛔')?' danger':''}">${x}</div>`).join('')}<div class="mini" style="margin-top:6px">الحسابات بالريال وقبل الرسوم. ${cu==='$'?'سعر السهم بالدولار.':''}</div>`;
+}
+function useSug(){$('#f_qty').value=SUG||'';updCalc()}
+function savePlan(andExec){
+  const g=i=>{const el=$('#'+i);return el?el.value.trim():undefined};
+  const sym=(g('f_symbol')||'').toUpperCase();
+  if(!sym){toast('اكتب رمز السهم');return}
+  if(!n(g('f_stop'))){toast('حدد وقف الخسارة أولاً');return}
+  let t=editId?S.trades.find(x=>x.id===editId):{id:uid(),status:'planned',created:today()};
+  Object.assign(t,{symbol:sym,market:g('f_market'),name:g('f_name'),planDate:g('f_planDate'),horizon:g('f_horizon'),entryPlan:g('f_entryPlan'),stop:g('f_stop'),target:g('f_target'),qty:g('f_qty'),reason:g('f_reason'),chart:g('f_chart'),advice:g('f_advice'),sharia:$('#f_sharia').checked});
+  ['entryPrice','entryFees','entryDate','exitPrice','exitFees','exitDate','lesson'].forEach(k=>{const v=g('f_'+k);if(v!==undefined)t[k]=v});
+  if(!editId)S.trades.push(t);
+  save();toast('تم الحفظ');
+  if(andExec){go('home');execM(t.id)}else go(t.status==='planned'?'home':'trades');
+}
+
+/* ===== النوافذ ===== */
+function modal(h){$('#sheet').innerHTML=h;$('#modal').classList.add('show')}
+function closeModal(){$('#modal').classList.remove('show')}
+$('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
+const T=id=>S.trades.find(x=>x.id===id);
+
+function execM(id){const t=T(id);modal(`<h3>تنفيذ الشراء — ${esc(t.symbol)}</h3><p class="mini">اكتب البيانات الفعلية من إشعار التنفيذ في المنصة.</p>
+ <div class="row"><div><label>سعر الشراء الفعلي (${cur(t)})</label><input type="number" step="any" inputmode="decimal" id="m1" value="${esc(t.entryPlan||'')}"></div><div><label>الكمية</label><input type="number" step="any" inputmode="decimal" id="m2" value="${esc(t.qty||'')}"></div></div>
+ <div class="row"><div><label>رسوم الشراء (${cur(t)})</label><input type="number" step="any" inputmode="decimal" id="m3" value="0"></div><div><label>التاريخ</label><input type="date" id="m4" value="${today()}"></div></div>
+ <div class="btns"><button onclick="doExec('${id}')">تأكيد</button><button class="sec" onclick="closeModal()">إلغاء</button></div>`)}
+function doExec(id){const t=T(id);if(!n($('#m1').value)||!n($('#m2').value)){toast('أدخل السعر والكمية');return}
+ Object.assign(t,{status:'open',entryPrice:$('#m1').value,qty:$('#m2').value,entryFees:$('#m3').value,entryDate:$('#m4').value,lastPrice:$('#m1').value,lastPriceDate:today()});save();closeModal();render();toast('تم تسجيل الشراء')}
+
+function priceM(id){const t=T(id);modal(`<h3>تحديث السعر — ${esc(t.symbol)}</h3><label>السعر الحالي (${cur(t)})</label><input type="number" step="any" inputmode="decimal" id="m1" value="${esc(t.lastPrice||'')}">
+ <label>تعديل وقف الخسارة (اختياري — للرفع فقط)</label><input type="number" step="any" inputmode="decimal" id="m2" value="${esc(t.stop||'')}">
+ <div class="btns"><button onclick="doPrice('${id}')">حفظ</button><button class="sec" onclick="closeModal()">إلغاء</button></div>`)}
+function doPrice(id){const t=T(id),ns=n($('#m2').value);if(ns&&ns<n(t.stop)){toast('القاعدة: لا ننزّل وقف الخسارة بعد الدخول');return}
+ t.lastPrice=$('#m1').value;t.lastPriceDate=today();if(ns)t.stop=$('#m2').value;save();closeModal();render()}
+
+function closeM(id){const t=T(id);modal(`<h3>بيع / إغلاق — ${esc(t.symbol)}</h3>
+ <div class="row"><div><label>سعر البيع الفعلي (${cur(t)})</label><input type="number" step="any" inputmode="decimal" id="m1" value="${esc(t.lastPrice||'')}"></div><div><label>رسوم البيع (${cur(t)})</label><input type="number" step="any" inputmode="decimal" id="m2" value="0"></div></div>
+ <div class="row"><div><label>التاريخ</label><input type="date" id="m3" value="${today()}"></div><div><label>سبب الخروج</label><select id="m4"><option>وصل الهدف</option><option>ضرب وقف الخسارة</option><option>خروج يدوي حسب الخطة</option><option>خروج يدوي خارج الخطة</option></select></div></div>
+ <label>الدرس المستفاد</label><textarea id="m5" placeholder="وش نفع؟ وش ما نفع؟ هل التزمت بالخطة؟"></textarea>
+ <div class="btns"><button class="red" onclick="doClose('${id}')">تأكيد البيع</button><button class="sec" onclick="closeModal()">إلغاء</button></div>`)}
+function doClose(id){const t=T(id);if(!n($('#m1').value)){toast('أدخل سعر البيع');return}
+ Object.assign(t,{status:'closed',exitPrice:$('#m1').value,exitFees:$('#m2').value,exitDate:$('#m3').value,exitReason:$('#m4').value,lesson:$('#m5').value});save();closeModal();render();
+ const p=realPL(t);toast((p>0?'ربح ':'خسارة ')+fmt(Math.abs(p))+' ر.س')}
+
+function cancelT(id){if(confirm('إلغاء هذه الخطة؟')){T(id).status='cancelled';save();render()}}
+function delT(id){if(confirm('حذف الصفقة نهائياً؟')){S.trades=S.trades.filter(x=>x.id!==id);save();render()}}
+
+/* ===== الصفقات ===== */
+function trades(c){
+  const F={all:'الكل',planned:'خطط',open:'مفتوحة',closed:'مغلقة',cancelled:'ملغاة'};
+  let L=S.trades.filter(t=>filter==='all'||t.status===filter).slice().reverse();
+  $('#app').innerHTML=`<div class="chips">${Object.entries(F).map(([k,v])=>`<button class="chip${filter===k?' on':''}" onclick="filter='${k}';render()">${v} (${k==='all'?S.trades.length:S.trades.filter(t=>t.status===k).length})</button>`).join('')}</div>
+  ${c.closed.length?`<div class="card"><h3>إحصائيات الصفقات المغلقة</h3><div class="kv"><div><span>العدد</span><b>${c.closed.length}</b></div><div><span>نسبة النجاح</span><b>${fmt(c.winRate,0)}%</b></div><div><span>متوسط الربح</span><b class="pos">${sgn(c.avgWin)}</b></div><div><span>متوسط الخسارة</span><b class="neg">${sgn(c.avgLoss)}</b></div><div><span>أفضل صفقة</span><b class="pos">${sgn(c.best)}</b></div><div><span>أسوأ صفقة</span><b class="neg">${sgn(c.worst)}</b></div></div></div>`:''}
+  ${L.length?L.map(tradeCard).join(''):'<div class="empty">لا توجد صفقات هنا</div>'}`;
+}
+
+/* ===== رسالة Claude ===== */
+let incAll=false, newReq=true;
+function claude(c){
+  $('#app').innerHTML=`<div class="card"><h3>🤖 رسالة جاهزة لـ Claude</h3>
+  <p class="mini">انسخ الرسالة والصقها في المحادثة، وأرفق معها صور الشارت (يومي + أسبوعي) للسهم اللي تبي نحلله.</p>
+  <label class="check"><input type="checkbox" id="c1"${newReq?' checked':''} onchange="newReq=this.checked;render()"> أضف طلب تحليل صفقة جديدة</label>
+  ${newReq?`<div class="row"><div><label>رمز السهم المطلوب</label><input id="c_sym" style="direction:ltr" placeholder="GOOGL"></div><div><label>السعر الحالي</label><input id="c_px" type="number" step="any" inputmode="decimal"></div></div><label>ملاحظاتك / سؤالك</label><textarea id="c_q" placeholder="ليش تفكر فيه؟ وش شفت في الشارت؟"></textarea>`:''}
+  <label class="check"><input type="checkbox" id="c2"${incAll?' checked':''} onchange="incAll=this.checked;render()"> أرسل كل الصفقات المغلقة (وإلا آخر 10)</label>
+  <button style="width:100%;margin:8px 0" class="sec" onclick="buildOut()">🔄 تحديث الرسالة</button>
+  <textarea id="out" readonly></textarea>
+  <div class="btns"><button onclick="copyOut()">📋 نسخ</button><button class="sec" onclick="shareOut()">↗️ مشاركة</button></div></div>`;
+  ['c_sym','c_px','c_q'].forEach(i=>{const e=$('#'+i);if(e)e.addEventListener('input',buildOut)});
+  buildOut();
+}
+function buildOut(){
+  const c=calc(),s=S.settings,L=[];
+  L.push(`📒 سجل القرني للتداول — ${today()}`,`المنصة: ${s.platform} | سعر الدولار: ${s.usdRate}`,'');
+  L.push('【الحساب】',`رأس المال الأساسي: ${fmt(n(s.capital))} ر.س | إيداع/سحب صافي: ${sgn(c.net)}`,`رأس المال المحقق: ${fmt(c.equity)} | الكاش المتاح: ${fmt(c.cash)} | المستثمر حالياً: ${fmt(c.invested)}`,`قيمة المحفظة مع غير المحقق: ${fmt(c.market)}`,`الربح المحقق: ${sgn(c.realized)} | غير المحقق: ${sgn(c.unreal)}`,`التراجع من القمة: ${fmt(c.dd,1)}% (حد الإيقاف ${s.maxDDPct}%)`,`القواعد: مخاطرة ${s.riskPct}% للصفقة (${fmt(c.equity*s.riskPct/100)} ر.س) | أقصى مركز ${s.maxPosPct}% | لا هامش ولا خيارات ولا تداول ليلي`,'');
+  if(c.closed.length)L.push('【الإحصائيات】',`صفقات مغلقة: ${c.closed.length} | نجاح: ${fmt(c.winRate,0)}% | متوسط ربح ${sgn(c.avgWin)} | متوسط خسارة ${sgn(c.avgLoss)}`,'');
+  L.push(`【الصفقات المفتوحة (${c.open.length})】`);
+  c.open.forEach(t=>L.push(`• ${t.symbol} (${t.market==='US'?'أمريكي':'سعودي'}) | دخول ${cur(t)}${t.entryPrice} × ${t.qty} بتاريخ ${t.entryDate} | الحالي ${cur(t)}${t.lastPrice||t.entryPrice} (${t.lastPriceDate||''}) | وقف ${t.stop} | هدف ${t.target} | غير محقق ${sgn(unrealPL(t))} ر.س (${fmt(pct(t),1)}%)${t.reason?`\n  السبب: ${t.reason}`:''}`));
+  if(!c.open.length)L.push('لا يوجد');
+  const pl=S.trades.filter(t=>t.status==='planned');
+  if(pl.length){L.push('','【خطط لم تُنفّذ】');pl.forEach(t=>L.push(`• ${t.symbol} | دخول ${t.entryPlan} | وقف ${t.stop} | هدف ${t.target} | كمية ${t.qty||'-'} | ${t.planDate}${t.reason?`\n  السبب: ${t.reason}`:''}`))}
+  const cl=c.closed.slice().reverse().slice(0,incAll?9999:10);
+  L.push('',`【الصفقات المغلقة ${incAll?'(الكل)':'(آخر 10)'}】`);
+  cl.forEach(t=>L.push(`• ${t.symbol} | ${t.entryDate}→${t.exitDate} | ${t.entryPrice}→${t.exitPrice} × ${t.qty} | ${sgn(realPL(t))} ر.س (${fmt(pct(t),1)}%) | ${t.exitReason||''}${t.lesson?`\n  الدرس: ${t.lesson}`:''}`));
+  if(!cl.length)L.push('لا يوجد');
+  if(newReq){const sy=($('#c_sym')?.value||'').toUpperCase(),px=$('#c_px')?.value,q=$('#c_q')?.value;
+    L.push('','【طلب تحليل صفقة جديدة】',`السهم: ${sy||'—'} | السعر الحالي: ${px||'—'}`,q?`ملاحظاتي: ${q}`:'','مرفق: صورة الشارت اليومي + الأسبوعي.','المطلوب: هل أدخل؟ وإذا نعم: سعر الدخول، وقف الخسارة، الهدف، والكمية حسب قواعدنا.')}
+  $('#out').value=L.filter((x,i,a)=>!(x===''&&a[i-1]==='')).join('\n');
+}
+async function copyOut(){const v=$('#out').value;try{await navigator.clipboard.writeText(v);toast('تم النسخ ✅')}catch(e){$('#out').select();document.execCommand('copy');toast('تم النسخ')}}
+async function shareOut(){const v=$('#out').value;if(navigator.share){try{await navigator.share({text:v})}catch(e){}}else copyOut()}
+
+/* ===== الحاسبة ===== */
+let TM='simple', TD={days:365};
+function tools(c){
+  const base=n(S.settings.capital)+c.net, actual=base?c.realized/base*100:0;
+  const first=c.closed.length?c.closed.map(t=>t.entryDate).filter(Boolean).sort()[0]:null;
+  const days=first?Math.max(1,(new Date(today())-new Date(first))/864e5):0;
+  $('#app').innerHTML=`<div class="card"><h3>📊 أداؤك الفعلي من السجل</h3><div class="kv">
+  <div><span>العائد المحقق</span><b class="${cls(actual)}">${fmt(actual,2)}%</b></div><div><span>المبلغ</span><b class="${cls(c.realized)}">${sgn(c.realized)}</b></div>
+  <div><span>منذ أول صفقة</span><b>${first?Math.round(days)+' يوم':'-'}</b></div><div><span>العائد السنوي التقريبي</span><b>${first&&days>=30?fmt(actual*365/days,1)+'%':'يحتاج 30 يوم'}</b></div></div>
+  <p class="mini">استخدم هذا الرقم في الحاسبة بدل رقم متفائل.</p></div>
+  <div class="chips"><button class="chip${TM==='simple'?' on':''}" onclick="TM='simple';render()">عائد بسيط</button><button class="chip${TM==='comp'?' on':''}" onclick="TM='comp';render()">نمو مركّب + إضافة شهرية</button></div>
+  <div class="card">${TM==='simple'?`<h3>📈 حاسبة العائد البسيط</h3>
+   <label>المبلغ المستثمر (ر.س)</label><input type="number" step="any" inputmode="decimal" id="t_p" value="${fmt(c.equity,0).replace(/,/g,'')}">
+   <label>العائد السنوي: <b id="t_rv"></b></label><input type="range" id="t_r" min="0" max="30" step="0.5" value="10">
+   <label>المدة بالأيام</label><div class="chips">${[30,90,180,365,730].map(d=>`<button class="chip${TD.days===d?' on':''}" onclick="TD.days=${d};$('#t_d').value=${d};tcalc();document.querySelectorAll('.dchip').forEach(x=>x.classList.remove('on'));this.classList.add('on')" >${d>=365?d/365+' سنة':d+' يوم'}</button>`).join('').replace(/class="chip/g,'class="dchip chip')}</div>
+   <input type="number" id="t_d" value="${TD.days}" inputmode="numeric">`
+  :`<h3>🌱 النمو المركّب مع إضافة شهرية</h3>
+   <div class="row"><div><label>المبلغ الحالي (ر.س)</label><input type="number" step="any" inputmode="decimal" id="t_p" value="${fmt(c.equity,0).replace(/,/g,'')}"></div><div><label>إضافة شهرية (ر.س)</label><input type="number" step="any" inputmode="decimal" id="t_m" value="500"></div></div>
+   <label>العائد السنوي المتوقع: <b id="t_rv"></b></label><input type="range" id="t_r" min="0" max="30" step="0.5" value="10">
+   <label>عدد السنوات</label><input type="number" id="t_y" value="5" inputmode="numeric">`}
+   <div class="calc" id="t_out"></div>
+   <p class="mini">الحاسبة توضيحية وتفترض عائداً ثابتاً. الأسهم لا تعطي عائداً ثابتاً، وقد تكون بعض السنوات بالسالب.</p></div>`;
+  document.querySelectorAll('#app input').forEach(e=>e.addEventListener('input',tcalc));tcalc();
+}
+function tcalc(){
+  const P=n($('#t_p').value), R=n($('#t_r').value); $('#t_rv').textContent=R+'%';
+  if(TM==='simple'){const d=n($('#t_d').value);TD.days=d;const pr=P*R/100*d/365;
+    $('#t_out').innerHTML=`<div class="kv"><div><span>صافي الربح</span><b class="pos">+${fmt(pr)}</b></div><div><span>الإجمالي</span><b>${fmt(P+pr)}</b></div>
+    <div><span>ربح شهري</span><b>${fmt(pr/(d/30.4167||1))}</b></div><div><span>ربح يومي</span><b>${fmt(pr/(d||1))}</b></div>
+    <div><span>المدة</span><b>${d} يوم ≈ ${fmt(d/30.4167,1)} شهر</b></div><div><span>العائد من المبلغ</span><b>${fmt(P?pr/P*100:0)}%</b></div></div>`;return}
+  const M=n($('#t_m').value), Y=Math.max(0,Math.round(n($('#t_y').value))), r=R/100/12;
+  let bal=P, rows=[];
+  for(let y=1;y<=Y;y++){for(let m=0;m<12;m++)bal=bal*(1+r)+M;const inv=P+M*12*y;rows.push(`<div><span>سنة ${y}</span><b>${fmt(bal,0)} <small class="mini">(ربح ${fmt(bal-inv,0)})</small></b></div>`)}
+  const inv=P+M*12*Y;
+  $('#t_out').innerHTML=`<div class="kv"><div><span>الرصيد النهائي</span><b>${fmt(bal,0)}</b></div><div><span>إجمالي ما دفعته</span><b>${fmt(inv,0)}</b></div>
+  <div><span>الأرباح</span><b class="pos">+${fmt(bal-inv,0)}</b></div><div><span>الأرباح من الرصيد</span><b>${fmt(bal?(bal-inv)/bal*100:0,1)}%</b></div></div>
+  <div class="kv" style="grid-template-columns:1fr;margin-top:10px">${rows.join('')}</div>`;
+}
+
+/* ===== الإعدادات ===== */
+function settings(c){
+  const s=S.settings;
+  $('#app').innerHTML=`<div class="card"><h3>⚙️ الإعدادات</h3>
+  <div class="row"><div><label>رأس المال الأساسي (ر.س)</label><input type="number" step="any" id="s_capital" value="${s.capital}"></div><div><label>سعر الدولار</label><input type="number" step="any" id="s_usdRate" value="${s.usdRate}"></div></div>
+  <div class="row3"><div><label>مخاطرة الصفقة %</label><input type="number" step="any" id="s_riskPct" value="${s.riskPct}"></div><div><label>أقصى مركز %</label><input type="number" step="any" id="s_maxPosPct" value="${s.maxPosPct}"></div><div><label>حد الإيقاف %</label><input type="number" step="any" id="s_maxDDPct" value="${s.maxDDPct}"></div></div>
+  <label>المنصة</label><input id="s_platform" value="${esc(s.platform)}">
+  <div class="btns"><button onclick="saveSet()">حفظ الإعدادات</button></div></div>
+
+  <div class="card"><h3>💵 الإيداع والسحب</h3>
+  <div class="row3"><div><label>النوع</label><select id="mv_t"><option value="in">إيداع</option><option value="out">سحب</option></select></div><div><label>المبلغ (ر.س)</label><input type="number" step="any" inputmode="decimal" id="mv_a"></div><div><label>التاريخ</label><input type="date" id="mv_d" value="${today()}"></div></div>
+  <div class="btns"><button class="sec" onclick="addMove()">إضافة</button></div>
+  ${S.moves.slice().reverse().map(m=>`<div class="move"><span>${m.date} • ${m.type==='in'?'إيداع':'سحب'}</span><b class="${m.type==='in'?'pos':'neg'}">${m.type==='in'?'+':'-'}${fmt(n(m.amount))}</b><button class="sm sec" onclick="delMove('${m.id}')">✕</button></div>`).join('')||'<p class="mini">لا توجد حركات. رأس المال الأساسي يُحسب كأول إيداع.</p>'}</div>
+
+  <div class="card"><h3>📜 قواعدنا</h3><ol class="rules">
+  <li>لا صفقة بدون خطة مكتوبة: دخول + وقف خسارة + هدف + كمية.</li>
+  <li>الخسارة في الصفقة الواحدة لا تتجاوز ${s.riskPct}% من رأس المال.</li>
+  <li>لا يتجاوز السهم الواحد ${s.maxPosPct}% من المحفظة.</li>
+  <li>لا ننزّل وقف الخسارة بعد الدخول أبداً (نرفعه فقط).</li>
+  <li>لا هامش، لا خيارات، لا تداول ليلي، أسهم متوافقة شرعياً فقط.</li>
+  <li>لا نستخدم فلوس القسط أو الطوارئ.</li>
+  <li>إذا تراجعت المحفظة ${s.maxDDPct}% من قمتها: نوقف ونراجع.</li>
+  <li>أمر بسعر محدد وقت السوق الرسمي، مع أمر جني الربح ووقف الخسارة.</li>
+  <li>القرار النهائي لصاحب المال، وتوصية Claude رأي وليست ضماناً.</li></ol></div>
+
+  <div class="card"><h3>💾 النسخ الاحتياطي</h3><p class="mini">البيانات محفوظة في متصفح هذا الجوال فقط. خذ نسخة احتياطية بشكل دوري.</p>
+  <div class="btns"><button class="sec" onclick="exportJSON()">⬇️ تصدير نسخة</button><button class="sec" onclick="$('#imp').click()">⬆️ استيراد نسخة</button></div>
+  <input type="file" id="imp" accept=".json,application/json" style="display:none" onchange="importJSON(this)">
+  <div class="btns"><button class="red" onclick="resetAll()">🗑️ مسح كل البيانات</button></div></div>`;
+}
+function saveSet(){['capital','usdRate','riskPct','maxPosPct','maxDDPct'].forEach(k=>S.settings[k]=n($('#s_'+k).value));S.settings.platform=$('#s_platform').value.trim()||'سهم';save();toast('تم الحفظ');render()}
+function addMove(){const a=n($('#mv_a').value);if(!a){toast('أدخل المبلغ');return}S.moves.push({id:uid(),type:$('#mv_t').value,amount:a,date:$('#mv_d').value});save();render()}
+function delMove(id){if(confirm('حذف الحركة؟')){S.moves=S.moves.filter(m=>m.id!==id);save();render()}}
+function exportJSON(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`qarni-trades-${today()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function importJSON(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.settings||!Array.isArray(d.trades))throw 0;if(confirm('استبدال البيانات الحالية بالنسخة المستوردة؟')){S=Object.assign(structuredClone(DEF),d);save();render();toast('تم الاستيراد')}}catch(e){toast('ملف غير صالح')}};r.readAsText(f);inp.value=''}
+function resetAll(){if(confirm('مسح كل البيانات نهائياً؟ خذ نسخة احتياطية أولاً.')&&confirm('متأكد؟')){S=structuredClone(DEF);save();render()}}
+
+render();
+</script>
+</body>
+</html>
